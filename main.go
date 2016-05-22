@@ -5,8 +5,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/bahadley/ssim/generator"
 	"github.com/bahadley/ssim/log"
+	"github.com/bahadley/ssim/stream"
 )
 
 func main() {
@@ -23,5 +23,5 @@ func main() {
 		os.Exit(0)
 	}()
 
-	generator.Generate()
+	stream.Transmit()
 }
