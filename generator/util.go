@@ -19,7 +19,7 @@ func GenSineData(tuples []*SensorTuple) error {
 
 	for i := 0; i < len(tuples); i++ {
 		tuples[i].Data = peakAmp * (math.Sin(hz*float64(i)) + 1.0)
-		tuples[i].Data = toFixed(tuples[i].Data, 2)
+		tuples[i].Data = roundDecimal(tuples[i].Data, 2)
 	}
 
 	return nil
@@ -32,7 +32,7 @@ func CalcAvg(tuples []*SensorTuple) error {
 		sum += tuples[i-1].Data
 		if i%aggSz == 0 {
 			tuples[i-1].Aggregate = sum / float64(aggSz)
-			tuples[i-1].Aggregate = toFixed(tuples[i-1].Aggregate, 2)
+			tuples[i-1].Aggregate = roundDecimal(tuples[i-1].Aggregate, 2)
 			sum = 0.0
 		}
 	}
@@ -40,7 +40,7 @@ func CalcAvg(tuples []*SensorTuple) error {
 	return nil
 }
 
-func toFixed(num float64, precision int) float64 {
+func roundDecimal(num float64, precision int) float64 {
 	output := math.Pow(10, float64(precision))
 	return float64(round(num*output)) / output
 }
