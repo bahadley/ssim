@@ -1,17 +1,11 @@
 package stream
 
 import (
-	"fmt"
 	"net"
-	"time"
 
 	"github.com/bahadley/ssim/generator"
 	"github.com/bahadley/ssim/log"
 	"github.com/bahadley/ssim/system"
-)
-
-const (
-	msgFmt = "{\"sensor\":\"%s\",\"type\":\"%s\",\"ts\":%d,\"data\":%.2f}"
 )
 
 func Transmit(tuples []*generator.SensorTuple) {
@@ -35,7 +29,10 @@ func Transmit(tuples []*generator.SensorTuple) {
 	defer conn.Close()
 
 	for _, tuple := range tuples {
-		msg := fmt.Sprintf(msgFmt, tuple.Sensor, "T", time.Now().UnixNano(), 40.4)
+		msg, err := generator.Marshal(tuple)
+		if err != nil {
+			continue
+		}
 
 		log.Trace.Printf("Tx(%s): %s", dstAddr, msg)
 
