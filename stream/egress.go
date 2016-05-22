@@ -2,6 +2,7 @@ package stream
 
 import (
 	"net"
+	"time"
 
 	"github.com/bahadley/ssim/generator"
 	"github.com/bahadley/ssim/log"
@@ -40,5 +41,7 @@ func Transmit(tuples []*generator.SensorTuple) {
 		if err != nil {
 			log.Warning.Println(err.Error())
 		}
+
+		time.Sleep(100 * time.Millisecond)
 	}
 }
