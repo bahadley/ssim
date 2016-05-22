@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -29,4 +30,11 @@ func main() {
 		log.Error.Fatal(err.Error())
 	}
 	stream.Transmit(tuples)
+	generator.CalcAvg(tuples)
+
+	for _, tuple := range tuples {
+		fmt.Printf("%d,%.2f,%.2f\n", tuple.Timestamp, tuple.Data, tuple.Aggregate)
+	}
+
+	log.Info.Println("Shutting down ...")
 }

@@ -10,6 +10,8 @@ const (
 
 	// Amplitude (peak-to-peak)
 	amp = 128
+
+	aggSz = 2
 )
 
 func GenSineData(tuples []*SensorTuple) error {
@@ -18,6 +20,21 @@ func GenSineData(tuples []*SensorTuple) error {
 	for i := 0; i < len(tuples); i++ {
 		tuples[i].Data = peakAmp * (math.Sin(hz*float64(i)) + 1.0)
 		tuples[i].Data = toFixed(tuples[i].Data, 2)
+	}
+
+	return nil
+}
+
+func CalcAvg(tuples []*SensorTuple) error {
+	sum := 0.0
+
+	for i := 1; i <= len(tuples); i++ {
+		sum += tuples[i-1].Data
+		if i%aggSz == 0 {
+			tuples[i-1].Aggregate = sum / float64(aggSz)
+			tuples[i-1].Aggregate = toFixed(tuples[i-1].Aggregate, 2)
+			sum = 0.0
+		}
 	}
 
 	return nil
