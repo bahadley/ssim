@@ -5,6 +5,7 @@ import (
 	"net"
 	"time"
 
+	"github.com/bahadley/ssim/generator"
 	"github.com/bahadley/ssim/log"
 	"github.com/bahadley/ssim/system"
 )
@@ -13,7 +14,7 @@ const (
 	msgFmt = "{\"sensor\":\"%s\",\"type\":\"%s\",\"ts\":%d,\"data\":%.2f}"
 )
 
-func Transmit() {
+func Transmit(tuples []*generator.SensorTuple) {
 	dstAddr, err := net.ResolveUDPAddr("udp",
 		system.DstAddr()+":"+system.DstPort())
 	if err != nil {
@@ -33,8 +34,8 @@ func Transmit() {
 
 	defer conn.Close()
 
-	for {
-		msg := fmt.Sprintf(msgFmt, "32afc954b7", "T", time.Now().UnixNano(), 40.4)
+	for _, tuple := range tuples {
+		msg := fmt.Sprintf(msgFmt, tuple.Sensor, "T", time.Now().UnixNano(), 40.4)
 
 		log.Trace.Printf("Tx(%s): %s", dstAddr, msg)
 
