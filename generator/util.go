@@ -10,8 +10,6 @@ const (
 
 	// Amplitude (peak-to-peak)
 	amp = 128
-
-	aggSz = 2
 )
 
 func GenSineData(tuples []*SensorTuple) error {
@@ -26,6 +24,7 @@ func GenSineData(tuples []*SensorTuple) error {
 }
 
 func CalcAvg(tuples []*SensorTuple) error {
+	aggSz := AggregateSize()
 	sum := 0.0
 
 	for i := 1; i <= len(tuples); i++ {
