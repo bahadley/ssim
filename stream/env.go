@@ -66,7 +66,7 @@ func DelayInterval() time.Duration {
 				envDelayInt)
 		}
 
-		if val <= 0 {
+		if val < 0 {
 			log.Error.Fatalf("Invalid environment variable value: %s",
 				envDelayInt)
 		}
