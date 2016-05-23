@@ -14,8 +14,17 @@ var (
 )
 
 func Transmit(tuples []*generator.SensorTuple) {
+	addrs := system.DstAddr()
+
+	for _, tuple := range tuples {
+		Egress(addrs[0], tuple)
+		time.Sleep(100 * time.Millisecond)
+	}
+}
+
+func Egress(addr string, tuple *generator.SensorTuple) {
 	dstAddr, err := net.ResolveUDPAddr("udp",
-		system.DstAddr()+":"+system.DstPort())
+		addr+":"+system.DstPort())
 	if err != nil {
 		log.Error.Fatal(err.Error())
 	}
@@ -33,22 +42,18 @@ func Transmit(tuples []*generator.SensorTuple) {
 
 	defer conn.Close()
 
-	for _, tuple := range tuples {
-		msg, err := generator.Marshal(tuple)
+	msg, err := generator.Marshal(tuple)
+	//if err != nil {
+	//	continue
+	//}
+
+	log.Trace.Printf("Tx(%s): %s", dstAddr, msg)
+
+	if transmit {
+		_, err = conn.Write([]byte(msg))
 		if err != nil {
-			continue
+			log.Warning.Println(err.Error())
 		}
-
-		log.Trace.Printf("Tx(%s): %s", dstAddr, msg)
-
-		if transmit {
-			_, err = conn.Write([]byte(msg))
-			if err != nil {
-				log.Warning.Println(err.Error())
-			}
-		}
-
-		time.Sleep(100 * time.Millisecond)
 	}
 }
 

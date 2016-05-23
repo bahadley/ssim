@@ -28,12 +28,12 @@ func Addr() string {
 	}
 }
 
-func DstAddr() string {
+func DstAddr() []string {
 	addr := os.Getenv(envDstAddr)
 	if len(addr) == 0 {
-		return defaultDstAddr
+		return []string{defaultDstAddr}
 	} else {
-		return addr
+		return []string{addr}
 	}
 }
 
