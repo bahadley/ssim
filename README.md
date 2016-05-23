@@ -4,11 +4,15 @@
 ### How can I run it? ###
 ssim can be run as a Linux command (for example):     
 
+```
 $ SSIM_DST_ADDR=10.0.0.5 ssim    
+```
 
 with environment variables configured, or just   
 
+```
 $ ssim   
+```
 
 to use default values.   
 
