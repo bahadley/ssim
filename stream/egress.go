@@ -3,6 +3,7 @@ package stream
 import (
 	"math/rand"
 	"net"
+	"sync"
 	"time"
 
 	"github.com/bahadley/ssim/generator"
@@ -11,6 +12,8 @@ import (
 
 var (
 	send bool
+
+	wg sync.WaitGroup
 )
 
 func Transmit(tuples []*generator.SensorTuple) {
@@ -20,6 +23,8 @@ func Transmit(tuples []*generator.SensorTuple) {
 	for i := 0; i < len(chans); i++ {
 		chans[i] = make(chan *generator.SensorTuple, ChannelBufSz())
 	}
+
+	wg.Add(len(chans))
 
 	for idx, pipe := range chans {
 		go egress(addrs[idx], pipe)
@@ -31,6 +36,12 @@ func Transmit(tuples []*generator.SensorTuple) {
 		chans[rand.Intn(len(chans))] <- tuple
 		time.Sleep(delayInt * time.Millisecond)
 	}
+
+	for _, pipe := range chans {
+		pipe <- nil
+	}
+
+	wg.Wait()
 
 	for _, pipe := range chans {
 		close(pipe)
@@ -56,10 +67,11 @@ func egress(addr string, pipe chan *generator.SensorTuple) {
 	}
 
 	defer conn.Close()
+	defer wg.Done()
 
 	for {
-		tuple, ok := <-pipe
-		if !ok {
+		tuple := <-pipe
+		if tuple == nil {
 			return
 		}
 

@@ -23,7 +23,7 @@ const (
 	defaultDelayInt  = 100
 	traceFlag        = "YES"
 	noTransmitFlag   = "NO"
-	defaultChanBufSz = 10
+	defaultChanBufSz = 1000
 )
 
 func Addr() string {
