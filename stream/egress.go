@@ -9,6 +9,10 @@ import (
 	"github.com/bahadley/ssim/system"
 )
 
+var (
+	transmit bool
+)
+
 func Transmit(tuples []*generator.SensorTuple) {
 	dstAddr, err := net.ResolveUDPAddr("udp",
 		system.DstAddr()+":"+system.DstPort())
@@ -37,11 +41,17 @@ func Transmit(tuples []*generator.SensorTuple) {
 
 		log.Trace.Printf("Tx(%s): %s", dstAddr, msg)
 
-		_, err = conn.Write([]byte(msg))
-		if err != nil {
-			log.Warning.Println(err.Error())
+		if transmit {
+			_, err = conn.Write([]byte(msg))
+			if err != nil {
+				log.Warning.Println(err.Error())
+			}
 		}
 
 		time.Sleep(100 * time.Millisecond)
 	}
+}
+
+func init() {
+	transmit = system.Transmit()
 }

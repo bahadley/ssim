@@ -19,4 +19,5 @@ to use default values.
 *SSIM_DST_ADDR*=127.0.0.1 (Destination IPv4 address for the sensor tuples)    
 *SSIM_DST_PORT*=22221 (Destination port for the sensor tuples)    
 
+*SSIM_TRANSMIT*=yes (Enable tracing [yes, no])
 *SSIM_TRACE*=no (Enable tracing [yes, no])
