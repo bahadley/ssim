@@ -8,10 +8,35 @@ import (
 )
 
 const (
-	defaultAggSz = 2
+	envNumTuples = "SSIM_NUM_TUPLES"
+	envAggSz     = "SSIM_AGGREGATE_SIZE"
 
-	envAggSz = "SSIM_AGGREGATE_SIZE"
+	defaultNumTuples = 100
+	defaultAggSz     = 2
 )
+
+func NumTuples() int {
+	var numTuples int
+
+	env := os.Getenv(envNumTuples)
+	if len(env) == 0 {
+		numTuples = defaultNumTuples
+	} else {
+		val, err := strconv.Atoi(env)
+		if err != nil {
+			log.Error.Fatalf("Invalid environment variable: %s",
+				envNumTuples)
+		}
+
+		if val <= 0 {
+			log.Error.Fatalf("Invalid environment variable value: %s",
+				envNumTuples)
+		}
+		numTuples = val
+	}
+
+	return numTuples
+}
 
 func AggregateSize() int {
 	var aggSz int

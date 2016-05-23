@@ -7,28 +7,29 @@ import (
 
 	"github.com/bahadley/ssim/generator"
 	"github.com/bahadley/ssim/log"
-	"github.com/bahadley/ssim/system"
 )
 
 var (
-	transmit bool
+	send bool
 )
 
 func Transmit(tuples []*generator.SensorTuple) {
-	addrs := system.DstAddr()
+	addrs := DstAddr()
 
 	chans := make([]chan *generator.SensorTuple, len(addrs))
 	for i := 0; i < len(chans); i++ {
-		chans[i] = make(chan *generator.SensorTuple)
+		chans[i] = make(chan *generator.SensorTuple, ChannelBufSz())
 	}
 
 	for idx, pipe := range chans {
 		go egress(addrs[idx], pipe)
 	}
 
+	delayInt := DelayInterval()
+
 	for _, tuple := range tuples {
 		chans[rand.Intn(len(chans))] <- tuple
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(delayInt * time.Millisecond)
 	}
 
 	for _, pipe := range chans {
@@ -38,13 +39,13 @@ func Transmit(tuples []*generator.SensorTuple) {
 
 func egress(addr string, pipe chan *generator.SensorTuple) {
 	dstAddr, err := net.ResolveUDPAddr("udp",
-		addr+":"+system.DstPort())
+		addr+":"+DstPort())
 	if err != nil {
 		log.Error.Fatal(err.Error())
 	}
 
 	srcAddr, err := net.ResolveUDPAddr("udp",
-		system.Addr()+":0")
+		Addr()+":0")
 	if err != nil {
 		log.Error.Fatal(err.Error())
 	}
@@ -69,7 +70,7 @@ func egress(addr string, pipe chan *generator.SensorTuple) {
 
 		log.Trace.Printf("Tx(%s): %s", dstAddr, msg)
 
-		if transmit {
+		if send {
 			_, err = conn.Write([]byte(msg))
 			if err != nil {
 				log.Warning.Println(err.Error())
@@ -79,5 +80,5 @@ func egress(addr string, pipe chan *generator.SensorTuple) {
 }
 
 func init() {
-	transmit = system.Transmit()
+	send = Send()
 }

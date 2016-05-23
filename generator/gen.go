@@ -5,7 +5,8 @@ const (
 	measurementType = "T"
 )
 
-func Generate(qty int) ([]*SensorTuple, error) {
+func Generate() ([]*SensorTuple, error) {
+	qty := NumTuples()
 	tuples := make([]*SensorTuple, qty)
 
 	for i := 0; i < qty; i++ {

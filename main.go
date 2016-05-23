@@ -25,7 +25,7 @@ func main() {
 		os.Exit(0)
 	}()
 
-	tuples, err := generator.Generate(200)
+	tuples, err := generator.Generate()
 	if err != nil {
 		log.Error.Fatal(err.Error())
 	}
