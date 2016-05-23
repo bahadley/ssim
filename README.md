@@ -19,6 +19,8 @@ to use default values.
 *SSIM_DST_ADDR*=127.0.0.1 (Comma delimited destination IPv4 addresses for the sensor tuples)    
 *SSIM_DST_PORT*=22221 (Destination port for the sensor tuples)    
 
+*SSIM_NUM_TUPLES*=100 (Number of sensor tuples to transmit)    
+*SSIM_DELAY_INTERVAL*=100 ms (Number of milliseconds to pause between tuple transmissions)   
 *SSIM_AGGREGATE_SIZE*=2 (Number of tuples that will trigger an egress result tuple in esp) 
 
 *SSIM_TRANSMIT*=yes (Enable tracing [yes, no])   
