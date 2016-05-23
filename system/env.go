@@ -33,7 +33,7 @@ func DstAddr() []string {
 	if len(addr) == 0 {
 		return []string{defaultDstAddr}
 	} else {
-		return []string{addr}
+		return strings.Split(addr, ",")
 	}
 }
 

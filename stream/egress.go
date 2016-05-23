@@ -1,6 +1,7 @@
 package stream
 
 import (
+	"math/rand"
 	"net"
 	"time"
 
@@ -16,13 +17,26 @@ var (
 func Transmit(tuples []*generator.SensorTuple) {
 	addrs := system.DstAddr()
 
+	chans := make([]chan *generator.SensorTuple, len(addrs))
+	for i := 0; i < len(chans); i++ {
+		chans[i] = make(chan *generator.SensorTuple)
+	}
+
+	for idx, pipe := range chans {
+		go egress(addrs[idx], pipe)
+	}
+
 	for _, tuple := range tuples {
-		Egress(addrs[0], tuple)
+		chans[rand.Intn(len(chans))] <- tuple
 		time.Sleep(100 * time.Millisecond)
+	}
+
+	for _, pipe := range chans {
+		close(pipe)
 	}
 }
 
-func Egress(addr string, tuple *generator.SensorTuple) {
+func egress(addr string, pipe chan *generator.SensorTuple) {
 	dstAddr, err := net.ResolveUDPAddr("udp",
 		addr+":"+system.DstPort())
 	if err != nil {
@@ -42,17 +56,24 @@ func Egress(addr string, tuple *generator.SensorTuple) {
 
 	defer conn.Close()
 
-	msg, err := generator.Marshal(tuple)
-	//if err != nil {
-	//	continue
-	//}
+	for {
+		tuple, ok := <-pipe
+		if !ok {
+			return
+		}
 
-	log.Trace.Printf("Tx(%s): %s", dstAddr, msg)
-
-	if transmit {
-		_, err = conn.Write([]byte(msg))
+		msg, err := generator.Marshal(tuple)
 		if err != nil {
-			log.Warning.Println(err.Error())
+			continue
+		}
+
+		log.Trace.Printf("Tx(%s): %s", dstAddr, msg)
+
+		if transmit {
+			_, err = conn.Write([]byte(msg))
+			if err != nil {
+				log.Warning.Println(err.Error())
+			}
 		}
 	}
 }
