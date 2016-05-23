@@ -15,8 +15,8 @@ to use default values.
 
 ### Configurable environment variables ###
 
-*SSIM_ADDR*=127.0.0.1 (Source IPv4 address for the sensor tuples) 
-*SSIM_DST_ADDR*=127.0.0.1 (Destination IPv4 address for the sensor tuples)    
+*SSIM_ADDR*=127.0.0.1 (Source IPv4 address for the sensor tuples)      
+*SSIM_DST_ADDR*=127.0.0.1 (Comma delimited destination IPv4 addresses for the sensor tuples)    
 *SSIM_DST_PORT*=22221 (Destination port for the sensor tuples)    
 
 *SSIM_TRANSMIT*=yes (Enable tracing [yes, no])
