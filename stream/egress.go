@@ -19,33 +19,35 @@ var (
 func Transmit(tuples []*generator.SensorTuple) {
 	addrs := DstAddr()
 
+	// Make a slice of channels and initialize them.
 	chans := make([]chan *generator.SensorTuple, len(addrs))
 	for i := 0; i < len(chans); i++ {
 		chans[i] = make(chan *generator.SensorTuple, ChannelBufSz())
 	}
 
+	// Counting semaphore set to the number of channels.
 	wg.Add(len(chans))
 
+	// Launch all threads.  Each thread has a different destination.
 	for idx, pipe := range chans {
 		go egress(addrs[idx], pipe)
 	}
 
 	delayInt := DelayInterval()
 
+	// Send all the tuples by randomly selecting channels.
 	for _, tuple := range tuples {
 		chans[rand.Intn(len(chans))] <- tuple
 		time.Sleep(delayInt * time.Millisecond)
 	}
 
+	// Send a poison pill into the channels to shut down the threads.
 	for _, pipe := range chans {
 		pipe <- nil
 	}
 
+	// Wait for the threads to finish any queued work.
 	wg.Wait()
-
-	for _, pipe := range chans {
-		close(pipe)
-	}
 }
 
 func egress(addr string, pipe chan *generator.SensorTuple) {
@@ -72,6 +74,7 @@ func egress(addr string, pipe chan *generator.SensorTuple) {
 	for {
 		tuple := <-pipe
 		if tuple == nil {
+			// Poison pill found.
 			return
 		}
 
@@ -82,11 +85,13 @@ func egress(addr string, pipe chan *generator.SensorTuple) {
 
 		log.Trace.Printf("Tx(%s): %s", dstAddr, msg)
 
-		if send {
-			_, err = conn.Write([]byte(msg))
-			if err != nil {
-				log.Warning.Println(err.Error())
-			}
+		if !send {
+			continue
+		}
+
+		_, err = conn.Write([]byte(msg))
+		if err != nil {
+			log.Warning.Println(err.Error())
 		}
 	}
 }
