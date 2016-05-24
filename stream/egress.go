@@ -89,7 +89,7 @@ func egress(addr string, pipe chan *generator.SensorTuple) {
 			continue
 		}
 
-		_, err = conn.Write([]byte(msg))
+		_, err = conn.Write(msg)
 		if err != nil {
 			log.Warning.Println(err.Error())
 		}
