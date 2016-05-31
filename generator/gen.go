@@ -12,13 +12,13 @@ func Generate() ([]*SensorTuple, error) {
 
 	flushInt := FlushInterval()
 
-	for i := 0; i < qty; i++ {
-		tuples[i] = new(SensorTuple)
-		tuples[i].Sensor = sensor
-		if flushInt > 0 && i > 0 && i%flushInt == 0 {
-			tuples[i].Type = FlushType
+	for i := 1; i <= qty; i++ {
+		tuples[i-1] = new(SensorTuple)
+		tuples[i-1].Sensor = sensor
+		if flushInt > 0 && i%flushInt == 0 {
+			tuples[i-1].Type = FlushType
 		} else {
-			tuples[i].Type = temperatureType
+			tuples[i-1].Type = temperatureType
 		}
 	}
 

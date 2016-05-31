@@ -16,10 +16,8 @@ func GenSineData(tuples []*SensorTuple) error {
 	peakAmp := float64(amp / 2)
 
 	for i := 0; i < len(tuples); i++ {
-		if tuples[i].Type != FlushType {
-			tuples[i].Data = peakAmp * (math.Sin(hz*float64(i)) + 1.0)
-			tuples[i].Data = roundDecimal(tuples[i].Data, 2)
-		}
+		tuples[i].Data = peakAmp * (math.Sin(hz*float64(i)) + 1.0)
+		tuples[i].Data = roundDecimal(tuples[i].Data, 2)
 	}
 
 	return nil
@@ -30,9 +28,6 @@ func CalcAvg(tuples []*SensorTuple) error {
 	sum := 0.0
 
 	for i := 1; i <= len(tuples); i++ {
-		if tuples[i-1].Type == FlushType {
-			continue
-		}
 		sum += tuples[i-1].Data
 		if i%aggSz == 0 {
 			tuples[i-1].Aggregate = sum / float64(aggSz)
