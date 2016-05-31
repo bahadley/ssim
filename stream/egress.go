@@ -34,11 +34,16 @@ func Transmit(tuples []*generator.SensorTuple) {
 	}
 
 	delayInt := DelayInterval()
+	flushDelay := FlushDelay()
 
 	// Send all the tuples by randomly selecting channels.
 	for _, tuple := range tuples {
 		chans[rand.Intn(len(chans))] <- tuple
-		time.Sleep(delayInt * time.Millisecond)
+		if tuple.Type == generator.FlushType {
+			time.Sleep(flushDelay * time.Millisecond)
+		} else {
+			time.Sleep(delayInt * time.Millisecond)
+		}
 	}
 
 	// Send a poison pill into the channels to shut down the threads.

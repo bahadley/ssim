@@ -8,11 +8,13 @@ import (
 )
 
 const (
-	envNumTuples = "SSIM_NUM_TUPLES"
-	envAggSz     = "SSIM_AGGREGATE_SIZE"
+	envNumTuples     = "SSIM_NUM_TUPLES"
+	envAggSz         = "SSIM_AGGREGATE_SIZE"
+	envFlushInterval = "SSIM_FLUSH_INTERVAL"
 
-	defaultNumTuples = 100
-	defaultAggSz     = 2
+	defaultNumTuples     = 100
+	defaultAggSz         = 2
+	defaultFlushInterval = 0
 )
 
 func NumTuples() int {
@@ -54,4 +56,22 @@ func AggregateSize() int {
 	}
 
 	return aggSz
+}
+
+func FlushInterval() int {
+	var flushInt int
+
+	env := os.Getenv(envFlushInterval)
+	if len(env) == 0 {
+		flushInt = defaultFlushInterval
+	} else {
+		val, err := strconv.Atoi(env)
+		if err != nil {
+			log.Error.Fatalf("Invalid environment variable: %s",
+				envFlushInterval)
+		}
+		flushInt = val
+	}
+
+	return flushInt
 }

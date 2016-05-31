@@ -10,20 +10,22 @@ import (
 )
 
 const (
-	envAddr     = "SSIM_ADDR"
-	envDstAddr  = "SSIM_DST_ADDR"
-	envDstPort  = "SSIM_DST_PORT"
-	envDelayInt = "SSIM_DELAY_INTERVAL"
-	envTransmit = "SSIM_TRANSMIT"
-	envTrace    = "SSIM_TRACE"
+	envAddr       = "SSIM_ADDR"
+	envDstAddr    = "SSIM_DST_ADDR"
+	envDstPort    = "SSIM_DST_PORT"
+	envDelayInt   = "SSIM_DELAY_INTERVAL"
+	envFlushDelay = "SSIM_FLUSH_DELAY"
+	envTransmit   = "SSIM_TRANSMIT"
+	envTrace      = "SSIM_TRACE"
 
-	defaultAddr      = "localhost"
-	defaultDstAddr   = "localhost"
-	defaultDstPort   = "22221"
-	defaultDelayInt  = 100
-	traceFlag        = "YES"
-	noTransmitFlag   = "NO"
-	defaultChanBufSz = 1000
+	defaultAddr       = "localhost"
+	defaultDstAddr    = "localhost"
+	defaultDstPort    = "22221"
+	defaultDelayInt   = 100
+	defaultFlushDelay = 10
+	traceFlag         = "YES"
+	noTransmitFlag    = "NO"
+	defaultChanBufSz  = 1000
 )
 
 func Addr() string {
@@ -74,6 +76,29 @@ func DelayInterval() time.Duration {
 	}
 
 	return delayInterval
+}
+
+func FlushDelay() time.Duration {
+	var flushDelay time.Duration
+
+	env := os.Getenv(envFlushDelay)
+	if len(env) == 0 {
+		flushDelay = defaultFlushDelay
+	} else {
+		val, err := strconv.Atoi(env)
+		if err != nil {
+			log.Error.Fatalf("Invalid environment variable: %s",
+				envFlushDelay)
+		}
+
+		if val < 0 {
+			log.Error.Fatalf("Invalid environment variable value: %s",
+				envFlushDelay)
+		}
+		flushDelay = time.Duration(val)
+	}
+
+	return flushDelay
 }
 
 func Trace() bool {

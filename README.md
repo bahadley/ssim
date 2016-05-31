@@ -24,4 +24,7 @@ to use default values.
 *SSIM_AGGREGATE_SIZE*=2 (Number of tuples that will trigger an egress result tuple in esp) 
 
 *SSIM_TRANSMIT*=yes (Enable tracing [yes, no])   
-*SSIM_TRACE*=no (Enable tracing [yes, no])
+*SSIM_TRACE*=no (Enable tracing [yes, no])   
+
+*SSIM_FLUSH_INTERVAL*=0 (Send a flush tuple every number of these tuples)   
+*SSIM_FLUSH_DELAY*=10 ms (Number of milliseconds to pause after a flush tuple is sent)   

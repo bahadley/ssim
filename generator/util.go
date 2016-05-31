@@ -16,8 +16,10 @@ func GenSineData(tuples []*SensorTuple) error {
 	peakAmp := float64(amp / 2)
 
 	for i := 0; i < len(tuples); i++ {
-		tuples[i].Data = peakAmp * (math.Sin(hz*float64(i)) + 1.0)
-		tuples[i].Data = roundDecimal(tuples[i].Data, 2)
+		if tuples[i].Type != FlushType {
+			tuples[i].Data = peakAmp * (math.Sin(hz*float64(i)) + 1.0)
+			tuples[i].Data = roundDecimal(tuples[i].Data, 2)
+		}
 	}
 
 	return nil
