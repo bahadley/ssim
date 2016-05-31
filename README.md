@@ -26,5 +26,5 @@ to use default values.
 *SSIM_TRANSMIT*=yes (Enable tracing [yes, no])   
 *SSIM_TRACE*=no (Enable tracing [yes, no])   
 
-*SSIM_FLUSH_INTERVAL*=0 (Send a flush tuple every number of these tuples)   
+*SSIM_FLUSH_INTERVAL*=0 (Send a flush tuple per this number of standard tuples)   
 *SSIM_FLUSH_DELAY*=10 ms (Number of milliseconds to pause after a flush tuple is sent)   
