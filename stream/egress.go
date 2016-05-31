@@ -38,6 +38,9 @@ func Transmit(tuples []*generator.SensorTuple) {
 
 	// Send all the tuples by randomly selecting channels.
 	for _, tuple := range tuples {
+		if tuple.Type == generator.FlushType {
+			time.Sleep(flushDelay * time.Millisecond)
+		}
 		chans[rand.Intn(len(chans))] <- tuple
 		if tuple.Type == generator.FlushType {
 			time.Sleep(flushDelay * time.Millisecond)
