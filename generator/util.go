@@ -30,6 +30,9 @@ func CalcAvg(tuples []*SensorTuple) error {
 	sum := 0.0
 
 	for i := 1; i <= len(tuples); i++ {
+		if tuples[i-1].Type == FlushType {
+			continue
+		}
 		sum += tuples[i-1].Data
 		if i%aggSz == 0 {
 			tuples[i-1].Aggregate = sum / float64(aggSz)

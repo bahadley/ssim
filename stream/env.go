@@ -22,7 +22,7 @@ const (
 	defaultDstAddr    = "localhost"
 	defaultDstPort    = "22221"
 	defaultDelayInt   = 100
-	defaultFlushDelay = 10
+	defaultFlushDelay = 10 
 	traceFlag         = "YES"
 	noTransmitFlag    = "NO"
 	defaultChanBufSz  = 1000
