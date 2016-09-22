@@ -3,6 +3,7 @@
 ### What is ssim? ###
 
 It is a simple data stream simulator designed to exercise esp (edge stream processor).
+It is used only for academic experiments.
 
 ### How can I run it? ###
 ssim can be run as a Linux command (for example):     
