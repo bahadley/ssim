@@ -1,5 +1,8 @@
-# ssim 
+# ssim (stream simulator)
 
+### What is ssim? ###
+
+It is a simple data stream simulator designed to exercise esp (edge stream processor).
 
 ### How can I run it? ###
 ssim can be run as a Linux command (for example):     
